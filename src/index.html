@@ -1,0 +1,22 @@
+<!doctype html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Geolocation POC</title>
+        <link href="styles/main.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div id="loading">
+            <p><span>Loading location...</span></p>
+        </div>
+        <div id="geolocation-info" class="hidden">
+            <p><strong>Latitude: </strong><span id="lat-data"></span></p>
+            <p><strong>Longitude: </strong><span id="long-data"></span></p>
+            <p><strong>Elevation: </strong><span id="elev-data"></span></p>
+            <p><a id="map-link" href="">View on map</a></p>
+        </div>
+        <div id="geolocation-unsupported" class="hidden">
+            <p><span id="unsupported-reason">Location data unsupported.</span>  Sorry.</p>
+        </div>
+        <script src="scripts/main.js"></script>
+    </body>
+</html>
