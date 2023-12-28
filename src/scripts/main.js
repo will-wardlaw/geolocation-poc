@@ -34,6 +34,7 @@ if('geolocation' in navigator) {
         longSpan.textContent = longitude;
         elevSpan.textContent = elevation;
 
+        displayDiv.innerHtml = '';
         for(let coordProp in coords)
         {
             const strong = document.createElement('strong');
