@@ -2,6 +2,8 @@ const loadingDiv = document.querySelector('#loading');
 const locationDiv = document.querySelector('#geolocation-info');
 const unsupportedDiv = document.querySelector('#geolocation-unsupported');
 
+const orientationDiv = document.querySelector('#orientation-info');
+
 const geoError = (reason) => {
     const reasonSpan = document.querySelector('#unsupported-reason');
     loadingDiv.setAttribute('class', 'hidden');
@@ -57,4 +59,25 @@ if('geolocation' in navigator) {
 else {
     geoError('Location data unsupported.');
 }
+
+window.addEventListener("deviceorientationabsolute", (event) => {
+    console.log(event);
+
+    const orientationData = document.querySelector('#orientation-display');
+
+    orientationData.innerHTML = '';
+
+    for(let eventProp in event)
+    {
+        const strong = document.createElement('strong');
+        strong.textContent = `${eventProp}: `;
+
+        const span = document.createElement('span');
+        span.textContent = event[eventProp];
+        
+        const para = document.createElement('p');
+        para.append(strong, span);
+        orientationData.append(para);
+    }
+});
 
