@@ -54,7 +54,7 @@ if('geolocation' in navigator) {
 
 
         displayObj(coords, displayDiv);
-        
+
         mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
     }, (watchError) => {
         console.log(watchError);
@@ -69,20 +69,6 @@ window.addEventListener("deviceorientationabsolute", (event) => {
     console.log(event);
 
     const orientationData = document.querySelector('#orientation-display');
-
-    orientationData.innerHTML = '';
-
-    for(let eventProp in event)
-    {
-        const strong = document.createElement('strong');
-        strong.textContent = `${eventProp}: `;
-
-        const span = document.createElement('span');
-        span.textContent = event[eventProp];
-        
-        const para = document.createElement('p');
-        para.append(strong, span);
-        orientationData.append(para);
-    }
+    displayObj(event, orientationData);
 });
 
