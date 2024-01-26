@@ -12,6 +12,22 @@ const geoError = (reason) => {
     reasonSpan.textContent = reason;
 };
 
+const displayObj = (obj, el) => {
+    el.innerHTML = '';
+    
+    for(let prop in obj) {
+        const strong = document.createElement('strong');
+        strong.textContent = `${prop}: `;
+
+        const span = document.createElement('span');
+        span.textContent = obj[prop];
+
+        const para = document.createElement('p');
+        para.append(strong, span);
+        el.append(para);
+    }
+}
+
 if('geolocation' in navigator) {
     const latSpan = document.querySelector('#lat-data');
     const longSpan = document.querySelector('#long-data');
@@ -36,20 +52,9 @@ if('geolocation' in navigator) {
         longSpan.textContent = longitude;
         elevSpan.textContent = elevation;
 
-        displayDiv.innerHTML = '';
-        for(let coordProp in coords)
-        {
-            const strong = document.createElement('strong');
-            strong.textContent = `${coordProp}: `;
 
-            const span = document.createElement('span');
-            span.textContent = coords[coordProp];
-            
-            const para = document.createElement('p');
-            para.append(strong, span);
-            displayDiv.append(para);
-        }
-
+        displayObj(coords, displayDiv);
+        
         mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
     }, (watchError) => {
         console.log(watchError);
