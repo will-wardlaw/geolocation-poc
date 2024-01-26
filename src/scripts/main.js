@@ -40,6 +40,8 @@ if('geolocation' in navigator) {
         const coords = position.coords;
         displayObj(coords, displayDiv);
 
+        const latitude = coords.latitude;
+        const longitude = coords.longitude;
         mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
     }, (watchError) => {
         console.log(watchError);
@@ -54,6 +56,8 @@ window.addEventListener("deviceorientationabsolute", (event) => {
     console.log(event);
 
     const orientationData = document.querySelector('#orientation-display');
-    displayObj(event, orientationData);
+    const orientationSubset = (({ alpha, beta, gamma, absolute }) => ({ alpha, beta, gamma, absolute }))(orientationData);
+
+    displayObj(event, orientationSubset);
 });
 
