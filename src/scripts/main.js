@@ -56,8 +56,8 @@ window.addEventListener("deviceorientationabsolute", (event) => {
     console.log(event);
 
     const orientationData = document.querySelector('#orientation-display');
-    const orientationSubset = (({ alpha, beta, gamma, absolute }) => ({ alpha, beta, gamma, absolute }))(orientationData);
+    const orientationInfo = (({ alpha, beta, gamma, absolute }) => ({ alpha, beta, gamma, absolute }))(event);
 
-    displayObj(event, orientationSubset);
+    displayObj(orientationInfo, orientationData);
 });
 
