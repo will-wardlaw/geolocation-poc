@@ -29,12 +29,7 @@ const displayObj = (obj, el) => {
 }
 
 if('geolocation' in navigator) {
-    const latSpan = document.querySelector('#lat-data');
-    const longSpan = document.querySelector('#long-data');
-    const elevSpan = document.querySelector('#elev-data');
-
     const displayDiv = document.querySelector('#coords-display');
-
     const mapLink = document.querySelector('#map-link');
 
     const watch = navigator.geolocation.watchPosition( (position) => {
@@ -43,16 +38,6 @@ if('geolocation' in navigator) {
         unsupportedDiv.setAttribute('class', 'hidden');
 
         const coords = position.coords;
-        const latitude = coords.latitude;
-        const longitude = coords.longitude;
-        const elevation = coords.altitude;
-        const accuracy = coords.accuracy;
-
-        latSpan.textContent = latitude;
-        longSpan.textContent = longitude;
-        elevSpan.textContent = elevation;
-
-
         displayObj(coords, displayDiv);
 
         mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
