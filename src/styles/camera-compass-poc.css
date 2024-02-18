@@ -3,7 +3,18 @@ div.visible {
     display: block;
 }
 
-div.hidden {
+.hidden {
     visibility: hidden;
     display: none;
+}
+
+div.overlay {
+    display: block;
+    position: absolute;
+    z-index: 100;
+    top: 0px;
+}
+
+div.video-container {
+    position: relative;
 }
