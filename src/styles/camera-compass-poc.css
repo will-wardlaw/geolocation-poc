@@ -1,0 +1,20 @@
+div.visible {
+    visibility: visible;
+    display: block;
+}
+
+.hidden {
+    visibility: hidden;
+    display: none;
+}
+
+div.overlay {
+    display: block;
+    position: absolute;
+    z-index: 100;
+    top: 0px;
+}
+
+div.video-container {
+    position: relative;
+}
