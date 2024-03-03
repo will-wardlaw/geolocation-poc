@@ -28,6 +28,17 @@ const displayObj = (obj, el) => {
     }
 }
 
+const cloneObj = (obj) =>
+{
+    const newObj = {};
+    for(let prop in obj)
+    {
+        newObj[prop] = obj[prop];
+    }
+
+    return newObj;
+}
+
 if('geolocation' in navigator) {
     const displayDiv = document.querySelector('#coords-display');
     const mapLink = document.querySelector('#map-link');
@@ -37,13 +48,13 @@ if('geolocation' in navigator) {
         locationDiv.setAttribute('class', 'visible');
         unsupportedDiv.setAttribute('class', 'hidden');
 
-        const coords = structuredClone(position.coords);
+        const coords = cloneObj(position.coords);
         const feetPerMeter = 3.28084;
         if(!!coords.altitude)
         {
             coords['altitude (ft.)'] = coords.altitude * feetPerMeter;
         }
-        
+
         displayObj(coords, displayDiv);
 
         const latitude = coords.latitude;
