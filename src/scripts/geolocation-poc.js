@@ -37,7 +37,13 @@ if('geolocation' in navigator) {
         locationDiv.setAttribute('class', 'visible');
         unsupportedDiv.setAttribute('class', 'hidden');
 
-        const coords = position.coords;
+        const coords = structuredClone(position.coords);
+        const feetPerMeter = 3.28084;
+        if(!!coords.altitude)
+        {
+            coords['altitude (ft.)'] = coords.altitude * feetPerMeter;
+        }
+        
         displayObj(coords, displayDiv);
 
         const latitude = coords.latitude;
