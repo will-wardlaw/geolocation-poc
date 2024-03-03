@@ -43,6 +43,7 @@ if('geolocation' in navigator) {
         {
             coords['altitude (ft.)'] = coords.altitude * feetPerMeter;
         }
+        
         displayObj(coords, displayDiv);
 
         const latitude = coords.latitude;
