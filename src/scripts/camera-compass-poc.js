@@ -89,14 +89,13 @@ const calculateCameraHeading = (obj) =>
 
     const camX = -zX;
     const camY = -zY;
-
-    if(camX === 0 || camX === -0) return 0;
     
-    const rawRad = Math.atan(camY / camX);
-    const rawCamera = toDegrees(rawRad);
+    const rawRad = Math.atan2(camY, camX);
+    const camRad = rawRad >= 0 ? rawRad : rawRad + 2 * Math.PI;
+    const rawCamera = toDegrees(camRad);
 
     const cameraHeading = 360 - (rawCamera - 90);
-    return cameraHeading;
+    return cameraHeading >= 360 ? cameraHeading - 360 : cameraHeading;
 }
 
 
@@ -169,4 +168,4 @@ function renderOrientation(event) {
     displayObj(orientationInfo, directionInfo);
 }
 
-renderOrientation( { alpha: 0, beta: 90, gamma: 0, absolute: true });
+renderOrientation( { alpha: 90, beta: 0, gamma: -90, absolute: true });
