@@ -87,12 +87,15 @@ const calculateCameraHeading = (obj) =>
     const zX = zGamma.x;
     const zY = zGamma.y;
 
-    if(zX === 0) return 0;
+    const camX = -zX;
+    const camY = -zY;
+
+    if(camX === 0 || camX === -0) return 0;
     
-    const rawRad = Math.atan(zY / zX);
+    const rawRad = Math.atan(camY / camX);
     const rawCamera = toDegrees(rawRad);
 
-    const cameraHeading = 360 - (rawCamera + 90);
+    const cameraHeading = 360 - (rawCamera - 90);
     return cameraHeading;
 }
 
@@ -108,7 +111,7 @@ const rodriguesRotation = (v, kVector, theta) => {
     const v2 = scaleVector(sinTheta, crossProduct(k, v));
     const v3 = scaleVector(dotProduct(k, v) * (1 - cosTheta), k);
 
-    return v1 + v2 + v3; 
+    return sumVector(sumVector(v1, v2), v3); 
 }
 
 const sumVector = (v1, v2) => {
@@ -120,9 +123,9 @@ const scaleVector = (s, v) => {
 }
 
 const crossProduct = (v1, v2) => {
-    const x = v1.y * v2.z - v1.z * v2.x;
+    const x = v1.y * v2.z - v1.z * v2.y;
     const y = v1.z * v2.x - v1.x * v2.z;
-    const z = v1.x * v2.y - v1.y * v2.y;
+    const z = v1.x * v2.y - v1.y * v2.x;
 
     return { x, y, z };
 }
@@ -149,15 +152,21 @@ const toDegrees = (radians) => {
 attachCameraToVideoElement(constraints, videoElement);
 
 window.addEventListener("deviceorientationabsolute", (event) => {
+    renderOrientation(event);
+});
+
+function renderOrientation(event) {
     console.log(event);
 
     noDirectionIndicator.setAttribute('class', 'hidden');
     directionInfo.setAttribute('class', 'visible');
 
     const orientationInfo = (({ alpha, beta, gamma, absolute }) => ({ alpha, beta, gamma, absolute }))(event);
-    
+
     const cameraHeading = calculateCameraHeading(orientationInfo);
     orientationInfo.cameraHeading = cameraHeading;
 
     displayObj(orientationInfo, directionInfo);
-});
+}
+
+renderOrientation( { alpha: 0, beta: 90, gamma: 0, absolute: true });
