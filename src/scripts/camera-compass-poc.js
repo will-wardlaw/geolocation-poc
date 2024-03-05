@@ -93,6 +93,7 @@ const calculateCameraHeading = (obj) =>
     const rawCamera = toDegrees(rawRad);
 
     const cameraHeading = 360 - (rawCamera + 90);
+    return cameraHeading;
 }
 
 
