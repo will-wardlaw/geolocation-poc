@@ -46,28 +46,6 @@ const calculateCameraHeading = (obj) =>
     const betaRad = toRadians(beta);
     const gammaRad = toRadians(gamma);
 
-    // const X = [ 1, 0, 0 ];
-    // const Y = [ 0, 1, 0 ];
-    // const Z = [ 0, 0, 1 ];
-
-    // const xAlpha = [ Math.cos(alphaRad), Math.sin(alphaRad), 0 ];
-    // const yAlpha = [ -Math.sin(alphaRad), Math.cos(alphaRad), 0];
-    // const zAlpha = Z;
-
-    // const xBeta = xAlpha;
-    // const yBeta = [ yAlpha[0] * Math.cos(betaRad), yAlpha[1] * Math.cos(betaRad), Math.sin(betaRad)];
-    // //const zBeta = [ yAlpha[0] * (Math.sin(betaRad), xAlpha[])]
-    // // zBeta should be the vector cross product of xBeta and yBeta
-    // const zBeta = [ yBeta[1] * xBeta[2] - yBeta[2] * xBeta[1],
-    //                 xBeta[0] * zBeta[2] - xBeta[2] * zBeta[0],
-    //                 yBeta[0] * zBeta[1] - yBeta[1] * zBeta[0] ];
-    
-    
-
-    // const xGamma = [ ]
-    // const yVec = [ -Math.sin(alphaRad) * Math.cos(betaRad), Math.cos(alphaRad) * Math.cos(betaRad), Math.sin(betaRad)];
-    // const xVec = [ Math.cos(alphaRad) * Math.cos(gammaRad), Math.sin(alphaRad) * ]
-
     // Earth coordinate frame
     // See https://developer.mozilla.org/en-US/docs/Web/API/Device_orientation_events/Orientation_and_motion_data_explained
     const east = { x: 1, y: 0, z: 0 };
@@ -85,6 +63,7 @@ const calculateCameraHeading = (obj) =>
     const zBeta = rodriguesRotation(zAlpha, xAlpha, betaRad);
 
     // These are the vectors after rotating the phone along the gamma value
+    // This should represent the phone coordinate frame in the earth coordinate frame.
     const xGamma = rodriguesRotation(xBeta, yBeta, gammaRad);
     const yGamma = yBeta;
     const zGamma = rodriguesRotation(zBeta, yBeta, gammaRad); 
