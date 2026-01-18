@@ -68,32 +68,42 @@ const calculateCameraHeading = (obj) =>
     // const yVec = [ -Math.sin(alphaRad) * Math.cos(betaRad), Math.cos(alphaRad) * Math.cos(betaRad), Math.sin(betaRad)];
     // const xVec = [ Math.cos(alphaRad) * Math.cos(gammaRad), Math.sin(alphaRad) * ]
 
-    const x = { x: 1, y: 0, z: 0 };
-    const y = { x: 0, y: 1, z: 0 };
-    const z = { x: 0, y: 0, z: 1 };
+    // Earth coordinate frame
+    // See https://developer.mozilla.org/en-US/docs/Web/API/Device_orientation_events/Orientation_and_motion_data_explained
+    const east = { x: 1, y: 0, z: 0 };
+    const north = { x: 0, y: 1, z: 0 };
+    const vertical = { x: 0, y: 0, z: 1 };
 
-    const xAlpha = rodriguesRotation(x, z, alphaRad);
-    const yAlpha = rodriguesRotation(y, z, alphaRad);
-    const zAlpha = z;
+    // These are the vectors after rotating the phone along the alpha value
+    const xAlpha = rodriguesRotation(east, vertical, alphaRad);
+    const yAlpha = rodriguesRotation(north, vertical, alphaRad);
+    const zAlpha = vertical;
 
+    // These are the vectors after rotating the phone along the beta value
     const xBeta = xAlpha;
     const yBeta = rodriguesRotation(yAlpha, xAlpha, betaRad);
     const zBeta = rodriguesRotation(zAlpha, xAlpha, betaRad);
 
+    // These are the vectors after rotating the phone along the gamma value
     const xGamma = rodriguesRotation(xBeta, yBeta, gammaRad);
     const yGamma = yBeta;
     const zGamma = rodriguesRotation(zBeta, yBeta, gammaRad); 
 
     const zX = zGamma.x;
     const zY = zGamma.y;
+    const zZ = zGamma.z;
 
     const camX = -zX;
     const camY = -zY;
+    const camZ = -zZ;
     
-    const rawRad = Math.atan2(camY, camX);
-    const camRad = rawRad >= 0 ? rawRad : rawRad + 2 * Math.PI;
+    const cameraCompassRawRad = Math.atan2(camY, camX);
+    const camRad = cameraCompassRawRad >= 0 ? cameraCompassRawRad : cameraCompassRawRad + 2 * Math.PI;
     const rawCamera = toDegrees(camRad);
 
+    const cameraXYMagnitude = Math.sqrt(camX * camX + camY * camY);
+    const camAngleFromHorizon = Math.atan2(camZ,cameraXYMagnitude);
+ 
     const cameraHeading = 360 - (rawCamera - 90);
     return cameraHeading >= 360 ? cameraHeading - 360 : cameraHeading;
 }
