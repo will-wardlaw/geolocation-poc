@@ -38,68 +38,6 @@ async function attachCameraToVideoElement(constraints, videoElement) {
 
 }
 
-const calculateCameraHeading = (obj) =>
-{
-    const { alpha, beta, gamma, absolute } = obj;
-
-    const alphaRad = toRadians(alpha);
-    const betaRad = toRadians(beta);
-    const gammaRad = toRadians(gamma);
-
-    // const X = [ 1, 0, 0 ];
-    // const Y = [ 0, 1, 0 ];
-    // const Z = [ 0, 0, 1 ];
-
-    // const xAlpha = [ Math.cos(alphaRad), Math.sin(alphaRad), 0 ];
-    // const yAlpha = [ -Math.sin(alphaRad), Math.cos(alphaRad), 0];
-    // const zAlpha = Z;
-
-    // const xBeta = xAlpha;
-    // const yBeta = [ yAlpha[0] * Math.cos(betaRad), yAlpha[1] * Math.cos(betaRad), Math.sin(betaRad)];
-    // //const zBeta = [ yAlpha[0] * (Math.sin(betaRad), xAlpha[])]
-    // // zBeta should be the vector cross product of xBeta and yBeta
-    // const zBeta = [ yBeta[1] * xBeta[2] - yBeta[2] * xBeta[1],
-    //                 xBeta[0] * zBeta[2] - xBeta[2] * zBeta[0],
-    //                 yBeta[0] * zBeta[1] - yBeta[1] * zBeta[0] ];
-    
-    
-
-    // const xGamma = [ ]
-    // const yVec = [ -Math.sin(alphaRad) * Math.cos(betaRad), Math.cos(alphaRad) * Math.cos(betaRad), Math.sin(betaRad)];
-    // const xVec = [ Math.cos(alphaRad) * Math.cos(gammaRad), Math.sin(alphaRad) * ]
-
-    const x = { x: 1, y: 0, z: 0 };
-    const y = { x: 0, y: 1, z: 0 };
-    const z = { x: 0, y: 0, z: 1 };
-
-    const xAlpha = rodriguesRotation(x, z, alphaRad);
-    const yAlpha = rodriguesRotation(y, z, alphaRad);
-    const zAlpha = z;
-
-    const xBeta = xAlpha;
-    const yBeta = rodriguesRotation(yAlpha, xAlpha, betaRad);
-    const zBeta = rodriguesRotation(zAlpha, xAlpha, betaRad);
-
-    const xGamma = rodriguesRotation(xBeta, yBeta, gammaRad);
-    const yGamma = yBeta;
-    const zGamma = rodriguesRotation(zBeta, yBeta, gammaRad); 
-
-    const zX = zGamma.x;
-    const zY = zGamma.y;
-
-    const camX = -zX;
-    const camY = -zY;
-    
-    const rawRad = Math.atan2(camY, camX);
-    const camRad = rawRad >= 0 ? rawRad : rawRad + 2 * Math.PI;
-    const rawCamera = toDegrees(camRad);
-
-    const cameraHeading = 360 - (rawCamera - 90);
-    return cameraHeading >= 360 ? cameraHeading - 360 : cameraHeading;
-}
-
-
-
 const rodriguesRotation = (v, kVector, theta) => {
     const k = makeUnit(kVector);
 
@@ -154,6 +92,69 @@ window.addEventListener("deviceorientationabsolute", (event) => {
     renderOrientation(event);
 });
 
+function calculateCameraHeading(camX, camY, camZ) {
+    const cameraCompassRawRad = Math.atan2(camY, camX);
+    const camRad = cameraCompassRawRad >= 0 ? cameraCompassRawRad : cameraCompassRawRad + 2 * Math.PI;
+    const rawCamera = toDegrees(camRad);
+
+    const cameraHeading = 360 - (rawCamera - 90);
+    return cameraHeading >= 360 ? cameraHeading - 360 : cameraHeading;
+}
+
+function calculateCameraElevation(camX, camY, camZ) {
+    const cameraXYMagnitude = Math.sqrt(camX * camX + camY * camY);
+    const camElevationRad = Math.atan2(camZ, cameraXYMagnitude);
+    return toDegrees(camElevationRad);
+}
+
+function calculateCameraVectors(obj) {
+    const phoneVectors = calculatePhoneVectorsRelativeToEarth(obj);
+
+    const { x, y, z } = phoneVectors;
+
+    const zX = z.x;
+    const zY = z.y;
+    const zZ = z.z;
+
+    // We're assuming our camera is the negative of the z vector.
+    // This isn't always a correct assumption.
+    const camX = -zX;
+    const camY = -zY;
+    const camZ = -zZ;
+    return { camX, camY, camZ };
+}
+
+function calculatePhoneVectorsRelativeToEarth(obj) {
+    const { alpha, beta, gamma, absolute } = obj;
+
+    const alphaRad = toRadians(alpha);
+    const betaRad = toRadians(beta);
+    const gammaRad = toRadians(gamma);
+
+    // Earth coordinate frame
+    // See https://developer.mozilla.org/en-US/docs/Web/API/Device_orientation_events/Orientation_and_motion_data_explained
+    const east = { x: 1, y: 0, z: 0 };
+    const north = { x: 0, y: 1, z: 0 };
+    const vertical = { x: 0, y: 0, z: 1 };
+
+    // These are the vectors after rotating the phone along the alpha value
+    const xAlpha = rodriguesRotation(east, vertical, alphaRad);
+    const yAlpha = rodriguesRotation(north, vertical, alphaRad);
+    const zAlpha = vertical;
+
+    // These are the vectors after rotating the phone along the beta value
+    const xBeta = xAlpha;
+    const yBeta = rodriguesRotation(yAlpha, xAlpha, betaRad);
+    const zBeta = rodriguesRotation(zAlpha, xAlpha, betaRad);
+
+    // These are the vectors after rotating the phone along the gamma value
+    // This should represent the phone coordinate frame in the earth coordinate frame.
+    const xGamma = rodriguesRotation(xBeta, yBeta, gammaRad);
+    const yGamma = yBeta;
+    const zGamma = rodriguesRotation(zBeta, yBeta, gammaRad);
+    return { x: xGamma, y: yGamma, z: zGamma };
+}
+
 function renderOrientation(event) {
     console.log(event);
 
@@ -162,8 +163,12 @@ function renderOrientation(event) {
 
     const orientationInfo = (({ alpha, beta, gamma, absolute }) => ({ alpha, beta, gamma, absolute }))(event);
 
-    const cameraHeading = calculateCameraHeading(orientationInfo);
+    const cameraVectors = calculateCameraVectors(orientationInfo);
+    const { camX, camY, camZ } = cameraVectors;
+    const cameraHeading = calculateCameraHeading(camX, camY, camZ);
+    const cameraElevation = calculateCameraElevation(camX, camY, camZ);
     orientationInfo.cameraHeading = cameraHeading;
+    orientationInfo.cameraElevation = cameraElevation;
 
     displayObj(orientationInfo, directionInfo);
 }
