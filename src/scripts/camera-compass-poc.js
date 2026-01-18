@@ -97,11 +97,14 @@ function calculateCameraHeading(camX, camY, camZ) {
     const camRad = cameraCompassRawRad >= 0 ? cameraCompassRawRad : cameraCompassRawRad + 2 * Math.PI;
     const rawCamera = toDegrees(camRad);
 
-    const cameraXYMagnitude = Math.sqrt(camX * camX + camY * camY);
-    const camAngleFromHorizon = Math.atan2(camZ, cameraXYMagnitude);
-
     const cameraHeading = 360 - (rawCamera - 90);
     return cameraHeading >= 360 ? cameraHeading - 360 : cameraHeading;
+}
+
+function calculateCameraElevation(camX, camY, camZ) {
+    const cameraXYMagnitude = Math.sqrt(camX * camX + camY * camY);
+    const camElevationRad = Math.atan2(camZ, cameraXYMagnitude);
+    return toDegrees(camElevationRad);
 }
 
 function calculateCameraVectors(obj) {
@@ -163,7 +166,9 @@ function renderOrientation(event) {
     const cameraVectors = calculateCameraVectors(orientationInfo);
     const { camX, camY, camZ } = cameraVectors;
     const cameraHeading = calculateCameraHeading(camX, camY, camZ);
+    const cameraElevation = calculateCameraElevation(camX, camY, camZ);
     orientationInfo.cameraHeading = cameraHeading;
+    orientationInfo.cameraElevation = cameraElevation;
 
     displayObj(orientationInfo, directionInfo);
 }
