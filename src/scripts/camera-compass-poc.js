@@ -38,23 +38,6 @@ async function attachCameraToVideoElement(constraints, videoElement) {
 
 }
 
-const calculateCameraHeading = (obj) =>
-{
-    const { camY, camX, camZ } = calculateCameraVector(obj);
-    
-    const cameraCompassRawRad = Math.atan2(camY, camX);
-    const camRad = cameraCompassRawRad >= 0 ? cameraCompassRawRad : cameraCompassRawRad + 2 * Math.PI;
-    const rawCamera = toDegrees(camRad);
-
-    const cameraXYMagnitude = Math.sqrt(camX * camX + camY * camY);
-    const camAngleFromHorizon = Math.atan2(camZ,cameraXYMagnitude);
- 
-    const cameraHeading = 360 - (rawCamera - 90);
-    return cameraHeading >= 360 ? cameraHeading - 360 : cameraHeading;
-}
-
-
-
 const rodriguesRotation = (v, kVector, theta) => {
     const k = makeUnit(kVector);
 
@@ -109,8 +92,20 @@ window.addEventListener("deviceorientationabsolute", (event) => {
     renderOrientation(event);
 });
 
-function calculateCameraVector(obj) {
-    const phoneVectors = calculatePhoneVectorsInRelativeToEarth(obj);
+function calculateCameraHeading(camX, camY, camZ) {
+    const cameraCompassRawRad = Math.atan2(camY, camX);
+    const camRad = cameraCompassRawRad >= 0 ? cameraCompassRawRad : cameraCompassRawRad + 2 * Math.PI;
+    const rawCamera = toDegrees(camRad);
+
+    const cameraXYMagnitude = Math.sqrt(camX * camX + camY * camY);
+    const camAngleFromHorizon = Math.atan2(camZ, cameraXYMagnitude);
+
+    const cameraHeading = 360 - (rawCamera - 90);
+    return cameraHeading >= 360 ? cameraHeading - 360 : cameraHeading;
+}
+
+function calculateCameraVectors(obj) {
+    const phoneVectors = calculatePhoneVectorsRelativeToEarth(obj);
 
     const { x, y, z } = phoneVectors;
 
@@ -123,7 +118,7 @@ function calculateCameraVector(obj) {
     const camX = -zX;
     const camY = -zY;
     const camZ = -zZ;
-    return { camY, camX, camZ };
+    return { camX, camY, camZ };
 }
 
 function calculatePhoneVectorsRelativeToEarth(obj) {
@@ -154,7 +149,7 @@ function calculatePhoneVectorsRelativeToEarth(obj) {
     const xGamma = rodriguesRotation(xBeta, yBeta, gammaRad);
     const yGamma = yBeta;
     const zGamma = rodriguesRotation(zBeta, yBeta, gammaRad);
-    return new { x: xGamma, y: yGamma, z: zGamma };
+    return { x: xGamma, y: yGamma, z: zGamma };
 }
 
 function renderOrientation(event) {
@@ -165,7 +160,9 @@ function renderOrientation(event) {
 
     const orientationInfo = (({ alpha, beta, gamma, absolute }) => ({ alpha, beta, gamma, absolute }))(event);
 
-    const cameraHeading = calculateCameraHeading(orientationInfo);
+    const cameraVectors = calculateCameraVectors(orientationInfo);
+    const { camX, camY, camZ } = cameraVectors;
+    const cameraHeading = calculateCameraHeading(camX, camY, camZ);
     orientationInfo.cameraHeading = cameraHeading;
 
     displayObj(orientationInfo, directionInfo);
