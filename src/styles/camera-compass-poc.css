@@ -13,8 +13,8 @@ div.overlay {
     position: absolute;
     z-index: 100;
     top: 0px;
-    color: yellow;
-    text-shadow: 0 0 2px darkgreen;
+    color: darkgreen;
+    text-shadow: 0 0 2px yellow;
 }
 
 div.video-container {
