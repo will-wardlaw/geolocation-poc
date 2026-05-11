@@ -11,9 +11,17 @@
                     <span>Video not supported :(</span>
                 </video>
                 <div id="camera-overlay" class="overlay">
-                    <span id="noDirection">No direction information!</span>
-                    <div id="directionInfo" class="hidden">
-                        This should not be visible!
+                    <div id="rawDirectionData">
+                        <span id="noDirection">No direction information!</span>
+                        <div id="directionInfo" class="hidden">
+                            This should not be visible!
+                        </div>
+                    </div>
+                    <div id="crosshair">
+                        <svg class="crosshair" width="50px" height="50px">
+                            <line x1="0" y1="25" x2="50" y2="25" />
+                            <line x1="25" y1="0" x2="25" y2="50" />
+                        </svg>
                     </div>
                 </div>
             </div>
