@@ -12,8 +12,8 @@ div.overlay {
     display: block;
     z-index: 100;
     top: 0px;
-    color: darkgreen;
-    text-shadow: 0 0 2px yellow;
+    color: lightgreen;
+    /* text-shadow: 0 0 2px yellow; */
 }
 
 div.overlay div {
@@ -29,7 +29,7 @@ svg.crosshair {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    stroke: darkgreen;
+    stroke: lightgreen;
     stroke-width: 2;
 }
 
