@@ -167,6 +167,8 @@ function renderOrientation(event) {
     displayObj(orientationInfo, directionInfo);
 }
 
+window.screen.orientation.lock('landscape-primary');
+
 attachCameraToVideoElement(constraints, videoElement);
 
 window.addEventListener("deviceorientationabsolute", (event) => {
