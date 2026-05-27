@@ -29,6 +29,11 @@ async function attachCameraToVideoElement(constraints, videoElement) {
     try {
         let stream = await navigator.mediaDevices.getUserMedia(constraints);
         videoElement.srcObject = stream;
+        var angle = screen.orientation.angle;
+        if(angle != 0) {
+            videoElement.style.transorm = `${angle}deg`;
+        }
+        
         videoElement.onloadedmetadata = () => {
             videoElement.play();
         }
@@ -85,12 +90,6 @@ const toRadians = (degrees) => {
 const toDegrees = (radians) => {
     return (radians / Math.PI) * 180;
 }
-
-attachCameraToVideoElement(constraints, videoElement);
-
-window.addEventListener("deviceorientationabsolute", (event) => {
-    renderOrientation(event);
-});
 
 function calculateCameraHeading(camX, camY, camZ) {
     const cameraCompassRawRad = Math.atan2(camY, camX);
@@ -172,5 +171,13 @@ function renderOrientation(event) {
 
     displayObj(orientationInfo, directionInfo);
 }
+
+window.screen.orientation.lock('landscape-primary');
+
+attachCameraToVideoElement(constraints, videoElement);
+
+window.addEventListener("deviceorientationabsolute", (event) => {
+    renderOrientation(event);
+});
 
 renderOrientation( { alpha: 90, beta: 0, gamma: -90, absolute: true });
