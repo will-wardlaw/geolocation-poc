@@ -31,7 +31,7 @@ async function attachCameraToVideoElement(constraints, videoElement) {
         videoElement.srcObject = stream;
         var angle = screen.orientation.angle;
         if(angle != 0) {
-            videoElement.style.transorm = `rotate(${angle}deg)`;
+            videoElement.style.transform = `rotate(${angle}deg)`;
         }
         
         videoElement.onloadedmetadata = () => {
