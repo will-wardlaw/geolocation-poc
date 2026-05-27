@@ -86,12 +86,6 @@ const toDegrees = (radians) => {
     return (radians / Math.PI) * 180;
 }
 
-attachCameraToVideoElement(constraints, videoElement);
-
-window.addEventListener("deviceorientationabsolute", (event) => {
-    renderOrientation(event);
-});
-
 function calculateCameraHeading(camX, camY, camZ) {
     const cameraCompassRawRad = Math.atan2(camY, camX);
     const camRad = cameraCompassRawRad >= 0 ? cameraCompassRawRad : cameraCompassRawRad + 2 * Math.PI;
@@ -172,5 +166,11 @@ function renderOrientation(event) {
 
     displayObj(orientationInfo, directionInfo);
 }
+
+attachCameraToVideoElement(constraints, videoElement);
+
+window.addEventListener("deviceorientationabsolute", (event) => {
+    renderOrientation(event);
+});
 
 renderOrientation( { alpha: 90, beta: 0, gamma: -90, absolute: true });
