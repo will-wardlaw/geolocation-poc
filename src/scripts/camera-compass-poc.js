@@ -29,6 +29,12 @@ async function attachCameraToVideoElement(constraints, videoElement) {
     try {
         let stream = await navigator.mediaDevices.getUserMedia(constraints);
         videoElement.srcObject = stream;
+        var angle = screen.orientation.angle;
+        if(angle != 0)
+        {
+            videoElement.style.transorm = `${angle}deg`;
+        }
+        
         videoElement.onloadedmetadata = () => {
             videoElement.play();
         }
