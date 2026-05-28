@@ -23,7 +23,6 @@ const displayObj = (obj, el) => {
     }
 };
 
-
 async function attachCameraToVideoElement(constraints, videoElement) {
     
     try {
