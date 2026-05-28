@@ -25,7 +25,6 @@ const displayObj = (obj, el) => {
         el.append(para);
     }
 };
-
 async function setup() {
 
     // This doesn't work. In the future, try requesting fullscreen access first.
