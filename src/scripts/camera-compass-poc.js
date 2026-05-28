@@ -28,7 +28,7 @@ async function setup() {
     // This doesn't work. In the future, try requesting fullscreen access first.
     //window.screen.orientation.lock('landscape-primary');
 
-    attachCameraToVideoElement(constraints, videoElement);
+    await attachCameraToVideoElement(constraints, videoElement);
     
     window.addEventListener("deviceorientationabsolute", (event) => {
         renderOrientation(event);
