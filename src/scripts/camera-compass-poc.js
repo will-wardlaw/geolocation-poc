@@ -23,6 +23,20 @@ const displayObj = (obj, el) => {
     }
 };
 
+async function setup() {
+
+    // This doesn't work. In the future, try requesting fullscreen access first.
+    //window.screen.orientation.lock('landscape-primary');
+
+    attachCameraToVideoElement(constraints, videoElement);
+    
+    window.addEventListener("deviceorientationabsolute", (event) => {
+        renderOrientation(event);
+    });
+
+    renderOrientation( { alpha: 90, beta: 0, gamma: -90, absolute: true });
+}
+
 async function attachCameraToVideoElement(constraints, videoElement) {
     
     try {
@@ -171,13 +185,4 @@ function renderOrientation(event) {
     displayObj(orientationInfo, directionInfo);
 }
 
-// This doesn't work. In the future, try requesting fullscreen access first.
-//window.screen.orientation.lock('landscape-primary');
-
-attachCameraToVideoElement(constraints, videoElement);
-
-window.addEventListener("deviceorientationabsolute", (event) => {
-    renderOrientation(event);
-});
-
-renderOrientation( { alpha: 90, beta: 0, gamma: -90, absolute: true });
+setup();
