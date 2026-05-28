@@ -189,4 +189,4 @@ function renderOrientation(event) {
     displayObj(orientationInfo, directionInfo);
 }
 
-launchButton.addEventListener('click', setup);
+setup();
