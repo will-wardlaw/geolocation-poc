@@ -1,6 +1,9 @@
 const videoElement = document.querySelector('#camera-container');
 const noDirectionIndicator = document.querySelector('#noDirection');
 const directionInfo = document.querySelector('#directionInfo');
+const mainSection = document.querySelector('#main');
+const launchButton = document.querySelector('#launchButton');
+const launcherSection = document.querySelector('#launcher');
 
 const constraints = {
     audio: false,
@@ -27,6 +30,8 @@ async function setup() {
 
     // This doesn't work. In the future, try requesting fullscreen access first.
     //window.screen.orientation.lock('landscape-primary');
+    mainSection.setAttribute('class', 'visible');
+    launcherSection.setAttribute('class', 'hidden');
 
     await attachCameraToVideoElement(constraints, videoElement);
     
@@ -185,4 +190,4 @@ function renderOrientation(event) {
     displayObj(orientationInfo, directionInfo);
 }
 
-setup();
+launchButton.addEventListener('click', setup);
