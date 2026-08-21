@@ -27,12 +27,14 @@ const displayObj = (obj, el) => {
 };
 async function setup() {
 
+    await attachCameraToVideoElement(constraints, videoElement);
+
     // This doesn't work. In the future, try requesting fullscreen access first.
-    //window.screen.orientation.lock('landscape-primary');
+    const bodyElement = document.querySelector('body');
+    await bodyElement.requestFullscreen();
+    window.screen.orientation.lock('portrait-primary');
     mainSection.setAttribute('class', 'visible');
     launcherSection.setAttribute('class', 'hidden');
-
-    await attachCameraToVideoElement(constraints, videoElement);
     
     window.addEventListener("deviceorientationabsolute", (event) => {
         renderOrientation(event);
@@ -172,8 +174,6 @@ function calculatePhoneVectorsRelativeToEarth(obj) {
 }
 
 function renderOrientation(event) {
-    console.log(event);
-
     noDirectionIndicator.setAttribute('class', 'hidden');
     directionInfo.setAttribute('class', 'visible');
 
