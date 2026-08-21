@@ -4,6 +4,7 @@ const directionInfo = document.querySelector('#directionInfo');
 const mainSection = document.querySelector('#main');
 const launchButton = document.querySelector('#launchButton');
 const launcherSection = document.querySelector('#launcher');
+const bodyElement = document.querySelector('body');
 
 const constraints = {
     audio: false,
@@ -27,20 +28,36 @@ const displayObj = (obj, el) => {
 };
 async function setup() {
 
+    // We need to do this first, as the browser asking if you want to allow video
+    // kicks you out of fullscreen.
     await attachCameraToVideoElement(constraints, videoElement);
 
-    // This doesn't work. In the future, try requesting fullscreen access first.
-    const bodyElement = document.querySelector('body');
     await bodyElement.requestFullscreen();
-    window.screen.orientation.lock('portrait-primary');
+    await window.screen.orientation.lock('portrait-primary');
     mainSection.setAttribute('class', 'visible');
     launcherSection.setAttribute('class', 'hidden');
+
+    document.addEventListener('fullscreenchange', (event) => {
+        returnToLauncher(event);
+    })
     
     window.addEventListener("deviceorientationabsolute", (event) => {
         renderOrientation(event);
     });
 
     renderOrientation( { alpha: 90, beta: 0, gamma: -90, absolute: true });
+}
+
+function returnToLauncher(event)
+{
+    if(document.fullscreenElement)
+    {
+        // We're entering fullscreen. I don't think we need to do anything.
+        return;
+    }
+
+    mainSection.setAttribute('class', 'hidden');
+    launcherSection.setAttribute('class', 'visible');
 }
 
 async function attachCameraToVideoElement(constraints, videoElement) {
