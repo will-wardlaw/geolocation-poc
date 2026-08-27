@@ -33,7 +33,9 @@ async function setup() {
     await attachCameraToVideoElement(constraints, videoElement);
 
     await bodyElement.requestFullscreen();
-    await window.screen.orientation.lock('portrait-primary');
+    const orientation = window.screen.orientation;
+    const currentOrientation = orientation.type;
+    await window.screen.orientation.lock(currentOrientation);
     mainSection.setAttribute('class', 'visible');
     launcherSection.setAttribute('class', 'hidden');
 
@@ -65,10 +67,6 @@ async function attachCameraToVideoElement(constraints, videoElement) {
     try {
         let stream = await navigator.mediaDevices.getUserMedia(constraints);
         videoElement.srcObject = stream;
-        var angle = screen.orientation.angle;
-        if(angle != 0) {
-            videoElement.style.transform = `rotate(-${angle}deg)`;
-        }
         
         videoElement.onloadedmetadata = () => {
             videoElement.play();
