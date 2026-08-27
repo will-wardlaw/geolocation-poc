@@ -4,6 +4,7 @@ const directionInfo = document.querySelector('#directionInfo');
 const mainSection = document.querySelector('#main');
 const launchButton = document.querySelector('#launchButton');
 const launcherSection = document.querySelector('#launcher');
+const bodyElement = document.querySelector('body');
 
 const constraints = {
     audio: false,
@@ -25,15 +26,22 @@ const displayObj = (obj, el) => {
         el.append(para);
     }
 };
-
 async function setup() {
 
-    // This doesn't work. In the future, try requesting fullscreen access first.
-    //window.screen.orientation.lock('landscape-primary');
+    // We need to do this first, as the browser asking if you want to allow video
+    // kicks you out of fullscreen.
+    await attachCameraToVideoElement(constraints, videoElement);
+
+    await bodyElement.requestFullscreen();
+    const orientation = window.screen.orientation;
+    const currentOrientation = orientation.type;
+    await window.screen.orientation.lock(currentOrientation);
     mainSection.setAttribute('class', 'visible');
     launcherSection.setAttribute('class', 'hidden');
 
-    await attachCameraToVideoElement(constraints, videoElement);
+    document.addEventListener('fullscreenchange', (event) => {
+        returnToLauncher(event);
+    });
     
     window.addEventListener("deviceorientationabsolute", (event) => {
         renderOrientation(event);
@@ -42,15 +50,23 @@ async function setup() {
     renderOrientation( { alpha: 90, beta: 0, gamma: -90, absolute: true });
 }
 
+function returnToLauncher(event)
+{
+    if(document.fullscreenElement)
+    {
+        // We're entering fullscreen. I don't think we need to do anything.
+        return;
+    }
+
+    mainSection.setAttribute('class', 'hidden');
+    launcherSection.setAttribute('class', 'visible');
+}
+
 async function attachCameraToVideoElement(constraints, videoElement) {
     
     try {
         let stream = await navigator.mediaDevices.getUserMedia(constraints);
         videoElement.srcObject = stream;
-        var angle = screen.orientation.angle;
-        if(angle != 0) {
-            videoElement.style.transform = `rotate(-${angle}deg)`;
-        }
         
         videoElement.onloadedmetadata = () => {
             videoElement.play();
@@ -173,8 +189,6 @@ function calculatePhoneVectorsRelativeToEarth(obj) {
 }
 
 function renderOrientation(event) {
-    console.log(event);
-
     noDirectionIndicator.setAttribute('class', 'hidden');
     directionInfo.setAttribute('class', 'visible');
 
