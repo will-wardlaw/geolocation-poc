@@ -41,7 +41,7 @@ async function setup() {
 
     document.addEventListener('fullscreenchange', (event) => {
         returnToLauncher(event);
-    })
+    });
     
     window.addEventListener("deviceorientationabsolute", (event) => {
         renderOrientation(event);
