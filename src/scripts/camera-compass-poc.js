@@ -35,7 +35,15 @@ async function setup() {
     await bodyElement.requestFullscreen();
     const orientation = window.screen.orientation;
     const currentOrientation = orientation.type;
-    await window.screen.orientation.lock(currentOrientation);
+    try {
+        await window.screen.orientation.lock(currentOrientation);
+    }
+    catch (error) {
+        // We're probably on a device that doesn't support rotation, but maybe
+        // we aren't allowed to lock.
+        console.error(error);
+    }
+
     mainSection.setAttribute('class', 'visible');
     launcherSection.setAttribute('class', 'hidden');
 
@@ -57,7 +65,9 @@ function returnToLauncher(event)
         // We're entering fullscreen. I don't think we need to do anything.
         return;
     }
-
+    
+    videoElement.pause();
+    videoElement.srcObject = null;
     mainSection.setAttribute('class', 'hidden');
     launcherSection.setAttribute('class', 'visible');
 }
