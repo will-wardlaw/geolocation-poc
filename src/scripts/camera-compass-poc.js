@@ -45,7 +45,7 @@ async function setup() {
         console.error(error);
     }
 
-    mainSection.setAttribute('class', 'visible full-sized');
+    mainSection.setAttribute('class', 'visible');
     launcherSection.setAttribute('class', 'hidden');
 
     document.addEventListener('fullscreenchange', (event) => {
@@ -80,6 +80,25 @@ async function attachCameraToVideoElement(constraints, videoElement) {
         videoElement.srcObject = stream;
         
         videoElement.onloadedmetadata = () => {
+            var vWidth = videoElement.videoWidth;
+            var vHeight = videoElement.videoHeight;
+
+            var screenWidth = window.screen.width;
+            var screenHeight = window.screen.height;
+
+            var widthRatio = screenWidth / vWidth;
+            var heightRatio = screenHeight / vHeight;
+
+            var scaleDown = Math.min(widthRatio, heightRatio);
+            var scaleUp = Math.max(widthRatio, heightRatio);
+            var scale = scaleDown < 1 ? scaleDown : scaleUp;
+
+            var newVideoWidth = vWidth * scale;
+            var newVideoHeight = vHeight * scale;
+
+            videoElement.style.width = newVideoWidth + "px";
+            videoElement.style.height = newVideoHeight + "px";
+            
             videoElement.play();
         }
     } catch (error) {
