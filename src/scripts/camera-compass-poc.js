@@ -80,6 +80,33 @@ async function attachCameraToVideoElement(constraints, videoElement) {
         videoElement.srcObject = stream;
         
         videoElement.onloadedmetadata = () => {
+            var vWidth = videoElement.videoWidth;
+            var vHeight = videoElement.videoHeight;
+
+            var screenWidth = window.screen.width;
+            var screenHeight = window.screen.height;
+
+            var widthRatio = screenWidth / vWidth;
+            var heightRatio = screenHeight / vHeight;
+
+            if(widthRatio < 1 || heightRatio < 1) {
+                // Scale video down to the size needed
+                var scale = Math.min(widthRatio, heightRatio);
+                var newVideoWidth = vWidth * scale;
+                var newVideoHeight = vHeight * scale;
+
+                videoElement.style.width = newVideoWidth + "px";
+                videoElement.style.height = newVideoHeight + "px";
+            }
+            else {
+                var scale = Math.max(widthRatio, heightRatio);
+                var newVideoWidth = vWidth * scale;
+                var newVideoHeight = vHeight * scale;
+
+                videoElement.style.width = newVideoWidth + "px";
+                videoElement.style.height = newVideoHeight + "px";
+            }
+
             videoElement.play();
         }
     } catch (error) {
