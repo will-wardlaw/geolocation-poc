@@ -65,7 +65,9 @@ function returnToLauncher(event)
         // We're entering fullscreen. I don't think we need to do anything.
         return;
     }
-
+    
+    videoElement.pause();
+    videoElement.srcObject = null;
     mainSection.setAttribute('class', 'hidden');
     launcherSection.setAttribute('class', 'visible');
 }
