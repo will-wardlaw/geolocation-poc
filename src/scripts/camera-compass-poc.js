@@ -45,7 +45,7 @@ async function setup() {
         console.error(error);
     }
 
-    mainSection.setAttribute('class', 'visible full-sized');
+    mainSection.setAttribute('class', 'visible');
     launcherSection.setAttribute('class', 'hidden');
 
     document.addEventListener('fullscreenchange', (event) => {
