@@ -9,7 +9,7 @@ const bodyElement = document.querySelector('body');
 const constraints = {
     audio: false,
     video: { facingMode: "environment" }
-}
+};
 
 const displayObj = (obj, el) => {
     el.innerHTML = '';
@@ -26,6 +26,7 @@ const displayObj = (obj, el) => {
         el.append(para);
     }
 };
+
 async function setup() {
 
     // We need to do this first, as the browser asking if you want to allow video
@@ -44,7 +45,7 @@ async function setup() {
         console.error(error);
     }
 
-    mainSection.setAttribute('class', 'visible');
+    mainSection.setAttribute('class', 'visible full-sized');
     launcherSection.setAttribute('class', 'hidden');
 
     document.addEventListener('fullscreenchange', (event) => {
